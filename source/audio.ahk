@@ -104,10 +104,31 @@ audio_output(audio_output_name)
 ;####################################################################################################################################################################################################
 
 
+if FileExist("settings.ini"){
+Filereadline, line2, settings.ini, 2
+Filereadline, line4, settings.ini, 4
+Filereadline, line6, settings.ini, 6
+Filereadline, line8, settings.ini, 8
+Hotkey, % "~" line2  , keyy 
+Hotkey, % "~" line2 " & Wheeldown" , keydown
+Hotkey, % "~" line2 " & Wheelup" , keyup 
+Hotkey, % line4  , keyswitch
+}else {
+FileAppend, #mixer scroll key`n, settings.ini
+FileAppend, LWin`n, settings.ini 
+FileAppend, #Switch audio output`n, settings.ini 
+FileAppend, ScrollLock`n, settings.ini 
+FileAppend, #output 1`n, settings.ini 
+FileAppend, Speakers`n, settings.ini 
+FileAppend, #output 2`n, settings.ini 
+FileAppend, Nvidia`n, settings.ini 
+reload
+return
+}
 
 #Include VA.ahk
 
-~f15::
+keyy:
 global valuee := []
 WinGet, yoy, ProcessName, A
 for process in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process")
@@ -118,12 +139,13 @@ for process in ComObjGet("winmgmts:").ExecQuery("Select * from Win32_Process")
         }
     }
 }
+While GetKeyState("Lwin")
+    Sleep, 10
+Return
 
-return
 
 
-
-f15 & WheelDown::
+keydown:
 
 for i, element in valuee
 {
@@ -132,7 +154,7 @@ for i, element in valuee
 }
 return
 
-f15 & WheelUp::
+keyup:
 
 for i, element in valuee
 {
@@ -274,19 +296,19 @@ GetVolumeObject(Param = 0)
 
 
 ;set-Audio-output####=################################################################################################################################################################################
-ScrollLock::
-If FileExist("2.audioeee"){
-	audio_output("Speakers")
-	tooleytipee("Speakers",1000)
-	FileDelete, %A_WorkingDir%\*.audioeee
-	FileAppend,, %A_WorkingDir%\1.audioeee
+keyswitch:
+If FileExist("2output.ini"){
+	audio_output(line6)
+	tooleytipee(line6,1000)
+	FileDelete, %A_WorkingDir%\*output.ini
+	FileAppend,, %A_WorkingDir%\1output.ini
 	return
 }
 else{
-	audio_output("LG TV")
-	tooleytipee("LG TV",1000)
-	FileDelete, %A_WorkingDir%\*.audioeee
-	FileAppend,, %A_WorkingDir%\2.audioeee
+	audio_output(line8)
+	tooleytipee(line8,1000)
+	FileDelete, %A_WorkingDir%\*output.ini
+	FileAppend,, %A_WorkingDir%\2output.ini
 	return
 }
 ;#########################################################################################################################################################################################
